@@ -1,0 +1,871 @@
+<!DOCTYPE html><html><head>
+      <title>gan_part3_dann_svhn_to_mnist</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:////Users/martinbravodiaz/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.8.15/crossnote/dependencies/katex/katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="important">Important </h1>
+<p>This code used a lot of GPU, due to time constraints and the fact that I am not able to use GPU, I only used <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mi>p</mi><mi>o</mi><mi>c</mi><mi>h</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">epoch=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">e</span><span class="mord mathnormal">p</span><span class="mord mathnormal">oc</span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span>, even though I don't reach the desired accuracy, It can be seen that the model is on the right track. I hope this helps you in some way. (Each model took about 1 hour to train with the standard Colab GPU)</p>
+<h1 id="gans-ndash-part-3-adversarial-domain-adaptation-svhn-rarr-mnist">GANs – Part 3: Adversarial domain adaptation (SVHN → MNIST) </h1>
+<p>Author: Sebastian Bujwid <a href="mailto:bujwid@kth.se">bujwid@kth.se</a></p>
+<p>Refer to <a href="./README.md">./README.md</a> for general comments.</p>
+<h2 id="scope">Scope </h2>
+<ul>
+<li>Train a CNN on SVHN digits classification. Evaluate it on MNIST (same classes)</li>
+<li>Implement and train an adversarial domain adaptation model <a href="https://www.jmlr.org/papers/volume17/15-239/15-239.pdf">DANN</a>. The model trains on SVHN data together with MNIST samples without labels. Evaluate the trained model on MNIST</li>
+</ul>
+<p><img src="./imgs/svhn_and_mnist.png" alt="SVHN and MNIST digits"></p>
+<h2 id="domain-adaptation">Domain adaptation </h2>
+<p>A model trained on data source would often perform the same task much worse on data from a different source (different data distribution). Consider, for example, a digit classifier trained on SVHN and evaluated on MNIST, as in this part of the practical.</p>
+<p>The goal of domain adaptation is to use source domain data (SVHN in our case) to train a model that works well on the target domain (MNIST in our case). In domain adaptation, we consider source and target tasks to be the same (classification of digits). In this setting, one typically assumes access to target domain samples but not their labels.</p>
+<p>Domain adaptation can be especially beneficial when source domain data is easily available but target data is difficult to label.<br>
+Many factors might cause the difficulty of labeling target data.<br>
+It could be because labeling target data is just too costly. Consider, for example, the cost of labeling real (target) data for training a robot, compared to using automatically extracting ground-truth from a robot simulator (e.g., <a href="https://ieeexplore.ieee.org/document/8460875">GraspGAN</a>, <a href="https://handtracker.mpi-inf.mpg.de/projects/GANeratedHands/content/GANeratedHands_CVPR2018.pdf">GANerated Hands</a>), or medical data that requires specialized domain knowledge to annotate and data from different facilities or capturing devices (such as CT scans) can have noticeable differences (e.g., <a href="https://ieeexplore.ieee.org/document/8370747">Mahmood <em>et al</em>. (2018)</a>, <a href="https://arxiv.org/abs/1901.08211">Chen <em>et al.</em> (2019)</a>).<br>
+But the challenges of labeling target data can also be due to time constraints when conditions quickly change (e.g., a pandemic), or in extreme cases, the conditions might change (e.g., problem difficulty increasing) even as a result of deploying a model that has a direct or indirect impact on the environment (e.g., consider social media companies using "AI" to detect hate speech, etc.).</p>
+<p>There exist different domain adaptation approaches. In this practical, however, we will only use an adversarial domain adaptation where a discriminator is used to force the model to learn domain-invariant representation (similar for between the source &amp; target domains). That should hopefully make the model overfit less to the source domain.</p>
+<p><strong>I will use 3 epochs due to GPU constraints</strong></p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>num_epochs <span class="token operator">=</span> <span class="token number">3</span>
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-try">try</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-from">from</span> omegaconf <span class="token keyword keyword-import">import</span> OmegaConf
+<span class="token keyword keyword-except">except</span> ModuleNotFoundError<span class="token punctuation">:</span>
+    <span class="token operator">%</span>pip install omegaconf
+    <span class="token keyword keyword-from">from</span> omegaconf <span class="token keyword keyword-import">import</span> OmegaConf
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-import">import</span> jax
+<span class="token keyword keyword-import">import</span> jax<span class="token punctuation">.</span>numpy <span class="token keyword keyword-as">as</span> jnp
+<span class="token keyword keyword-from">from</span> jax<span class="token punctuation">.</span>example_libraries <span class="token keyword keyword-import">import</span> optimizers<span class="token punctuation">,</span> stax
+<span class="token keyword keyword-from">from</span> jax <span class="token keyword keyword-import">import</span> jit
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code>jax<span class="token punctuation">.</span>devices<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre><pre class="language-text">[CudaDevice(id=0)]
+</pre>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-import">import</span> tensorflow <span class="token keyword keyword-as">as</span> tf
+<span class="token keyword keyword-import">import</span> tensorflow_datasets <span class="token keyword keyword-as">as</span> tfds
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-import">import</span> numpy <span class="token keyword keyword-as">as</span> np
+<span class="token keyword keyword-import">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword keyword-as">as</span> plt
+<span class="token keyword keyword-import">import</span> seaborn <span class="token keyword keyword-as">as</span> sns
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code>seed <span class="token operator">=</span> <span class="token number">42</span>
+</code></pre><h1 id="implementation">Implementation </h1>
+<h2 id="loading-data">Loading data </h2>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">mnist_to_svhn_format</span><span class="token punctuation">(</span>images<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-return">return</span> tf<span class="token punctuation">.</span>image<span class="token punctuation">.</span>grayscale_to_rgb<span class="token punctuation">(</span>
+        tf<span class="token punctuation">.</span>image<span class="token punctuation">.</span>resize<span class="token punctuation">(</span>images<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">32</span> <span class="token punctuation">,</span><span class="token number">32</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+
+<span class="token keyword keyword-def">def</span> <span class="token function">preprocess_imgs</span><span class="token punctuation">(</span>images<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-return">return</span> tf<span class="token punctuation">.</span>image<span class="token punctuation">.</span>per_image_standardization<span class="token punctuation">(</span>
+        tf<span class="token punctuation">.</span>cast<span class="token punctuation">(</span>images<span class="token punctuation">,</span> tf<span class="token punctuation">.</span>float32<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">255.</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">mnist_dataset</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    ds <span class="token operator">=</span> data<span class="token punctuation">.</span><span class="token builtin">map</span><span class="token punctuation">(</span><span class="token keyword keyword-lambda">lambda</span> x<span class="token punctuation">:</span> <span class="token punctuation">(</span>preprocess_imgs<span class="token punctuation">(</span>mnist_to_svhn_format<span class="token punctuation">(</span>x<span class="token punctuation">[</span><span class="token string">'image'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> x<span class="token punctuation">[</span><span class="token string">'label'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  num_parallel_calls<span class="token operator">=</span>tf<span class="token punctuation">.</span>data<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span>AUTOTUNE<span class="token punctuation">)</span>
+    ds <span class="token operator">=</span> ds<span class="token punctuation">.</span>cache<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># You might want to remove it if have little memory</span>
+    ds <span class="token operator">=</span> ds<span class="token punctuation">.</span>shuffle<span class="token punctuation">(</span><span class="token number">100000</span><span class="token punctuation">)</span>
+    <span class="token keyword keyword-return">return</span> ds
+
+<span class="token keyword keyword-def">def</span> <span class="token function">svhn_dataset</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    ds <span class="token operator">=</span> data<span class="token punctuation">.</span><span class="token builtin">map</span><span class="token punctuation">(</span><span class="token keyword keyword-lambda">lambda</span> x<span class="token punctuation">:</span> <span class="token punctuation">(</span>preprocess_imgs<span class="token punctuation">(</span>x<span class="token punctuation">[</span><span class="token string">'image'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> x<span class="token punctuation">[</span><span class="token string">'label'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  num_parallel_calls<span class="token operator">=</span>tf<span class="token punctuation">.</span>data<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span>AUTOTUNE<span class="token punctuation">)</span>
+    ds <span class="token operator">=</span> ds<span class="token punctuation">.</span>cache<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># You might want to remove it if have little memory</span>
+    ds <span class="token operator">=</span> ds<span class="token punctuation">.</span>shuffle<span class="token punctuation">(</span><span class="token number">100000</span><span class="token punctuation">)</span>
+    <span class="token keyword keyword-return">return</span> ds
+
+data_mnist<span class="token punctuation">,</span> data_mnist_dev <span class="token operator">=</span> tfds<span class="token punctuation">.</span>load<span class="token punctuation">(</span>
+    <span class="token string">'mnist'</span><span class="token punctuation">,</span>
+    split<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'train[:50%]'</span><span class="token punctuation">,</span> <span class="token string">'train[50%:]'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    shuffle_files<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+    data_dir<span class="token operator">=</span><span class="token string">'./data_dir'</span><span class="token punctuation">)</span>
+data_mnist_test <span class="token operator">=</span> tfds<span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token string">'mnist'</span><span class="token punctuation">,</span> split<span class="token operator">=</span><span class="token string">'test'</span><span class="token punctuation">,</span> shuffle_files<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+                            data_dir<span class="token operator">=</span><span class="token string">'./data_dir'</span><span class="token punctuation">)</span>
+
+data_svhn <span class="token operator">=</span> tfds<span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token string">'svhn_cropped'</span><span class="token punctuation">,</span> split<span class="token operator">=</span><span class="token string">'train'</span><span class="token punctuation">,</span> shuffle_files<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+                      data_dir<span class="token operator">=</span><span class="token string">'./data_dir'</span><span class="token punctuation">)</span>
+data_svhn_test <span class="token operator">=</span> tfds<span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token string">'svhn_cropped'</span><span class="token punctuation">,</span> split<span class="token operator">=</span><span class="token string">'test'</span><span class="token punctuation">,</span> shuffle_files<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+                           data_dir<span class="token operator">=</span><span class="token string">'./data_dir'</span><span class="token punctuation">)</span>
+
+ds_mnist <span class="token operator">=</span> mnist_dataset<span class="token punctuation">(</span>data_mnist<span class="token punctuation">)</span>
+ds_mnist_dev <span class="token operator">=</span> mnist_dataset<span class="token punctuation">(</span>data_mnist_dev<span class="token punctuation">)</span>
+ds_mnist_test <span class="token operator">=</span> mnist_dataset<span class="token punctuation">(</span>data_mnist_test<span class="token punctuation">)</span>
+
+ds_svhn <span class="token operator">=</span> svhn_dataset<span class="token punctuation">(</span>data_svhn<span class="token punctuation">)</span>
+ds_svhn_test <span class="token operator">=</span> svhn_dataset<span class="token punctuation">(</span>data_svhn_test<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">Downloading and preparing dataset 11.06 MiB (download: 11.06 MiB, generated: 21.00 MiB, total: 32.06 MiB) to data_dir/mnist/3.0.1...
+
+
+
+Dl Completed...:   0%|          | 0/5 [00:00&lt;?, ? file/s]
+
+
+Dataset mnist downloaded and prepared to data_dir/mnist/3.0.1. Subsequent calls will reuse this data.
+Downloading and preparing dataset 1.47 GiB (download: 1.47 GiB, generated: 1.09 GiB, total: 2.56 GiB) to data_dir/svhn_cropped/3.1.0...
+
+
+
+Dl Completed...: 0 url [00:00, ? url/s]
+
+
+
+Dl Size...: 0 MiB [00:00, ? MiB/s]
+
+
+
+Generating splits...:   0%|          | 0/3 [00:00&lt;?, ? splits/s]
+
+
+
+Generating train examples...:   0%|          | 0/73257 [00:00&lt;?, ? examples/s]
+
+
+
+Shuffling data_dir/svhn_cropped/incomplete.29I6G6_3.1.0/svhn_cropped-train.tfrecord*...:   0%|          | 0/73…
+
+
+
+Generating test examples...:   0%|          | 0/26032 [00:00&lt;?, ? examples/s]
+
+
+
+Shuffling data_dir/svhn_cropped/incomplete.29I6G6_3.1.0/svhn_cropped-test.tfrecord*...:   0%|          | 0/260…
+
+
+
+Generating extra examples...:   0%|          | 0/531131 [00:00&lt;?, ? examples/s]
+
+
+
+Shuffling data_dir/svhn_cropped/incomplete.29I6G6_3.1.0/svhn_cropped-extra.tfrecord*...:   0%|          | 0/53…
+
+
+Dataset svhn_cropped downloaded and prepared to data_dir/svhn_cropped/3.1.0. Subsequent calls will reuse this data.
+</pre>
+<h2 id="task-implement-sparse_softmax_cross_entropy-function">(Task) Implement <code>sparse_softmax_cross_entropy</code> function </h2>
+<p>The function should compute the cross-entropy between the input <code>targets</code> and softmax of the <code>logits</code> (or be equivalent to these operations).<br>
+"Sparse" refers to the <code>targets</code> being <code>int</code> values indicating target classes and not probability distributions over all class values.</p>
+<p>Similarly, to <code>sigmoid_cross_entropy</code> from Part 1, implementing softmax + cross-entropy as a single function can be beneficial.</p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-import">import</span> jax
+<span class="token keyword keyword-import">import</span> jax<span class="token punctuation">.</span>numpy <span class="token keyword keyword-as">as</span> jnp
+
+<span class="token keyword keyword-def">def</span> <span class="token function">sparse_softmax_cross_entropy</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">,</span> targets<span class="token punctuation">,</span> logits<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Compute sparse softmax cross-entropy loss.
+
+    :param targets: Sparse ground truth class indices, shape (batch_size,)
+    :param logits: Logits from the model, shape (batch_size, num_classes)
+    :return: Sparse softmax cross-entropy loss, scalar.
+    """</span>
+    <span class="token keyword keyword-assert">assert</span> targets<span class="token punctuation">.</span>ndim <span class="token operator">==</span> logits<span class="token punctuation">.</span>ndim <span class="token operator">-</span> <span class="token number">1</span>
+
+    exp_logits <span class="token operator">=</span> jnp<span class="token punctuation">.</span>exp<span class="token punctuation">(</span>logits<span class="token punctuation">)</span>
+
+    softmax_probs <span class="token operator">=</span> exp_logits <span class="token operator">/</span> jnp<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>exp_logits<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> keepdims<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+    target_probs <span class="token operator">=</span> softmax_probs<span class="token punctuation">[</span>jnp<span class="token punctuation">.</span>arange<span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>targets<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> targets<span class="token punctuation">]</span>
+
+    loss <span class="token operator">=</span> <span class="token operator">-</span>jnp<span class="token punctuation">.</span>log<span class="token punctuation">(</span>target_probs<span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-return">return</span> loss
+
+</code></pre><h3 id="task-test-the-sparse_softmax_cross_entropy-function">(Task) Test the <code>sparse_softmax_cross_entropy</code> function </h3>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>logits <span class="token operator">=</span> jnp<span class="token punctuation">.</span>array<span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>
+        <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.12</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">5.</span><span class="token punctuation">,</span> <span class="token number">4.2</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token number">0.42</span><span class="token punctuation">,</span> <span class="token number">0.13</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.1</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.48</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">[</span><span class="token number">0.1</span><span class="token punctuation">,</span> <span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.3</span><span class="token punctuation">,</span> <span class="token number">0.4</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">)</span>
+targets <span class="token operator">=</span> jnp<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+returned <span class="token operator">=</span> sparse_softmax_cross_entropy<span class="token punctuation">(</span>targets<span class="token operator">=</span>targets<span class="token punctuation">,</span> logits<span class="token operator">=</span>logits<span class="token punctuation">)</span>
+
+expected_mean_ce_loss <span class="token operator">=</span> <span class="token number">2.53088073318352</span>
+np<span class="token punctuation">.</span>testing<span class="token punctuation">.</span>assert_allclose<span class="token punctuation">(</span>expected_mean_ce_loss<span class="token punctuation">,</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>returned<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre><h3 id="optional-task-numerically-stable-sparse_softmax_cross_entropy-loss">(Optional task) Numerically stable <code>sparse_softmax_cross_entropy</code> loss </h3>
+<p>Can you implement the function such that it logits with a very large magnitude? Try rewriting the entire expression! Think of over- and underflows!</p>
+<p>Hint: You might find <code>jax.nn.logsumexp</code> useful!</p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-import">import</span> jax
+<span class="token keyword keyword-import">import</span> jax<span class="token punctuation">.</span>numpy <span class="token keyword keyword-as">as</span> jnp
+
+<span class="token keyword keyword-def">def</span> <span class="token function">sparse_softmax_cross_entropy</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">,</span> targets<span class="token punctuation">,</span> logits<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Numerically stable sparse softmax cross-entropy loss.
+
+    :param targets: Sparse ground truth class indices, shape (batch_size,)
+    :param logits: Logits from the model, shape (batch_size, num_classes)
+    :return: Sparse softmax cross-entropy loss, scalar.
+    """</span>
+    <span class="token keyword keyword-assert">assert</span> targets<span class="token punctuation">.</span>ndim <span class="token operator">==</span> logits<span class="token punctuation">.</span>ndim <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"Targets must have one dimension less than logits"</span>
+
+    <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span>targets<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+    <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span>logits<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+
+    <span class="token comment"># Compute log-sum-exp in a numerically stable way</span>
+    logsumexp <span class="token operator">=</span> jax<span class="token punctuation">.</span>nn<span class="token punctuation">.</span>logsumexp<span class="token punctuation">(</span>logits<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>  <span class="token comment"># Shape: (batch_size,)</span>
+
+    <span class="token comment"># Gather logits of the true class</span>
+    true_logits <span class="token operator">=</span> logits<span class="token punctuation">[</span>jnp<span class="token punctuation">.</span>arange<span class="token punctuation">(</span>logits<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> targets<span class="token punctuation">]</span>  <span class="token comment"># Shape: (batch_size,)</span>
+
+    <span class="token comment"># Compute the cross-entropy loss</span>
+    loss <span class="token operator">=</span> <span class="token operator">-</span>true_logits <span class="token operator">+</span> logsumexp  <span class="token comment"># Shape: (batch_size,)</span>
+
+    <span class="token comment"># Return the mean loss across the batch</span>
+    <span class="token keyword keyword-return">return</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>loss<span class="token punctuation">)</span>
+
+returned <span class="token operator">=</span> sparse_softmax_cross_entropy<span class="token punctuation">(</span>targets<span class="token operator">=</span>targets<span class="token punctuation">,</span> logits<span class="token operator">=</span>logits <span class="token operator">*</span> <span class="token number">1000.</span><span class="token punctuation">)</span>
+
+expected_mean_ce_loss <span class="token operator">=</span> <span class="token number">1773.3333333333333</span>
+np<span class="token punctuation">.</span>testing<span class="token punctuation">.</span>assert_allclose<span class="token punctuation">(</span>expected_mean_ce_loss<span class="token punctuation">,</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>returned<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre><pre class="language-text">(3,)
+(3, 4)
+</pre>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-import">import</span> jax
+<span class="token keyword keyword-import">import</span> jax<span class="token punctuation">.</span>numpy <span class="token keyword keyword-as">as</span> jnp
+
+<span class="token keyword keyword-def">def</span> <span class="token function">sparse_softmax_cross_entropy</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">,</span> targets<span class="token punctuation">,</span> logits<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Compute sparse softmax cross-entropy loss.
+
+    :param targets: Sparse ground truth class indices, shape (batch_size,)
+    :param logits: Logits from the model, shape (batch_size, num_classes)
+    :return: Sparse softmax cross-entropy loss, scalar.
+    """</span>
+    <span class="token keyword keyword-assert">assert</span> targets<span class="token punctuation">.</span>ndim <span class="token operator">==</span> logits<span class="token punctuation">.</span>ndim <span class="token operator">-</span> <span class="token number">1</span>
+
+    exp_logits <span class="token operator">=</span> jnp<span class="token punctuation">.</span>exp<span class="token punctuation">(</span>logits<span class="token punctuation">)</span>
+
+    softmax_probs <span class="token operator">=</span> exp_logits <span class="token operator">/</span> jnp<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>exp_logits<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> keepdims<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+    target_probs <span class="token operator">=</span> softmax_probs<span class="token punctuation">[</span>jnp<span class="token punctuation">.</span>arange<span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>targets<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> targets<span class="token punctuation">]</span>
+
+    loss <span class="token operator">=</span> <span class="token operator">-</span>jnp<span class="token punctuation">.</span>log<span class="token punctuation">(</span>target_probs<span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-return">return</span> loss
+
+</code></pre><h2 id="training-cnn-classifier-on-svhn-classification">Training CNN classifier on SVHN classification </h2>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>w_init <span class="token operator">=</span> jax<span class="token punctuation">.</span>nn<span class="token punctuation">.</span>initializers<span class="token punctuation">.</span>normal<span class="token punctuation">(</span>stddev<span class="token operator">=</span><span class="token number">0.02</span><span class="token punctuation">)</span>
+
+<span class="token keyword keyword-def">def</span> <span class="token function">create_cnn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-return">return</span>  stax<span class="token punctuation">.</span>serial<span class="token punctuation">(</span>
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strides<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strides<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">512</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Conv<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> strides<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token string">'SAME'</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>AvgPool<span class="token punctuation">(</span>window_shape<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+
+        stax<span class="token punctuation">.</span>Flatten
+    <span class="token punctuation">)</span>
+
+<span class="token keyword keyword-def">def</span> <span class="token function">create_label_predictor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-return">return</span> stax<span class="token punctuation">.</span>serial<span class="token punctuation">(</span>
+        stax<span class="token punctuation">.</span>Dense<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span> stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span>axis<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>Dense<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span> stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>Dense<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">plot_metrics</span><span class="token punctuation">(</span>metrics_dict<span class="token punctuation">,</span> title<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    fig<span class="token punctuation">,</span> axs <span class="token operator">=</span> plt<span class="token punctuation">.</span>subplots<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token builtin">len</span><span class="token punctuation">(</span>metrics_dict<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword keyword-if">if</span> title<span class="token punctuation">:</span>
+        fig<span class="token punctuation">.</span>suptitle<span class="token punctuation">(</span>title<span class="token punctuation">)</span>
+    <span class="token keyword keyword-for">for</span> i<span class="token punctuation">,</span> <span class="token punctuation">(</span>key<span class="token punctuation">,</span> vals<span class="token punctuation">)</span> <span class="token keyword keyword-in">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>metrics_dict<span class="token punctuation">.</span>items<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        marker <span class="token operator">=</span> <span class="token string">'o'</span> <span class="token keyword keyword-if">if</span> <span class="token string">'epoch'</span> <span class="token keyword keyword-in">in</span> key <span class="token keyword keyword-else">else</span> <span class="token boolean">None</span>
+        axs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>plot<span class="token punctuation">(</span>vals<span class="token punctuation">,</span> marker<span class="token operator">=</span>marker<span class="token punctuation">)</span>
+        axs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_title<span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+        <span class="token keyword keyword-if">if</span> <span class="token string">'acc'</span> <span class="token keyword keyword-in">in</span> key<span class="token punctuation">:</span>
+            axs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_ylim<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1.1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">accuracy</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-return">return</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>a <span class="token operator">==</span> b<span class="token punctuation">)</span>
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-import">import</span> tqdm
+<span class="token keyword keyword-import">import</span> functools
+<span class="token keyword keyword-from">from</span> IPython<span class="token punctuation">.</span>display <span class="token keyword keyword-import">import</span> clear_output
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">create_and_train_classifier</span><span class="token punctuation">(</span>hparams<span class="token punctuation">,</span> data<span class="token punctuation">,</span> eval_data<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    cnn_init<span class="token punctuation">,</span> cnn_apply <span class="token operator">=</span> create_cnn<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    dense_init<span class="token punctuation">,</span> dense_apply <span class="token operator">=</span> create_label_predictor<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    key <span class="token operator">=</span> jax<span class="token punctuation">.</span>random<span class="token punctuation">.</span>PRNGKey<span class="token punctuation">(</span>seed<span class="token punctuation">)</span>
+    key<span class="token punctuation">,</span> key_cnn<span class="token punctuation">,</span> key_pred <span class="token operator">=</span> jax<span class="token punctuation">.</span>random<span class="token punctuation">.</span>split<span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    data_input_shape <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    cnn_output_shape<span class="token punctuation">,</span> cnn_params <span class="token operator">=</span> cnn_init<span class="token punctuation">(</span>key_cnn<span class="token punctuation">,</span> data_input_shape<span class="token punctuation">)</span>
+    _<span class="token punctuation">,</span> dense_params <span class="token operator">=</span> dense_init<span class="token punctuation">(</span>key_pred<span class="token punctuation">,</span> cnn_output_shape<span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-def">def</span> <span class="token function">split_params</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword keyword-return">return</span> params<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token builtin">len</span><span class="token punctuation">(</span>cnn_params<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> params<span class="token punctuation">[</span><span class="token builtin">len</span><span class="token punctuation">(</span>cnn_params<span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+
+    opt_init<span class="token punctuation">,</span> opt_update<span class="token punctuation">,</span> get_params <span class="token operator">=</span> optimizers<span class="token punctuation">.</span>adam<span class="token punctuation">(</span>
+        step_size<span class="token operator">=</span>hparams<span class="token punctuation">.</span>lr<span class="token punctuation">,</span> b1<span class="token operator">=</span>hparams<span class="token punctuation">.</span>beta1
+    <span class="token punctuation">)</span>
+    opt_state <span class="token operator">=</span> opt_init<span class="token punctuation">(</span>cnn_params <span class="token operator">+</span> dense_params<span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-def">def</span> <span class="token function">loss_fn</span><span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        pred_y_logits <span class="token operator">=</span> dense_apply<span class="token punctuation">(</span>dense_params<span class="token punctuation">,</span> cnn_apply<span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        loss <span class="token operator">=</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>
+            sparse_softmax_cross_entropy<span class="token punctuation">(</span>targets<span class="token operator">=</span>y<span class="token punctuation">,</span> logits<span class="token operator">=</span>pred_y_logits<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            axis<span class="token operator">=</span><span class="token number">0</span>
+        <span class="token punctuation">)</span>
+        <span class="token keyword keyword-return">return</span> loss<span class="token punctuation">,</span> pred_y_logits
+
+    <span class="token keyword keyword-def">def</span> <span class="token function">evaluate</span><span class="token punctuation">(</span>opt_state<span class="token punctuation">,</span> eval_data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        cnn_params<span class="token punctuation">,</span> dense_params <span class="token operator">=</span> split_params<span class="token punctuation">(</span>get_params<span class="token punctuation">(</span>opt_state<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        loss_fn_jit <span class="token operator">=</span> jax<span class="token punctuation">.</span>jit<span class="token punctuation">(</span>loss_fn<span class="token punctuation">)</span>
+
+        loss_vals<span class="token punctuation">,</span> acc_vals <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token keyword keyword-for">for</span> i<span class="token punctuation">,</span> <span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span> <span class="token keyword keyword-in">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>tqdm<span class="token punctuation">.</span>tqdm<span class="token punctuation">(</span>
+            tfds<span class="token punctuation">.</span>as_numpy<span class="token punctuation">(</span>eval_data<span class="token punctuation">.</span>batch<span class="token punctuation">(</span>hparams<span class="token punctuation">.</span>batch_size<span class="token punctuation">)</span><span class="token punctuation">.</span>prefetch<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>data<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span>AUTOTUNE<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            desc<span class="token operator">=</span><span class="token string">'evaluation'</span>
+        <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            loss<span class="token punctuation">,</span> pred_y_logits <span class="token operator">=</span> loss_fn_jit<span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+            acc <span class="token operator">=</span> accuracy<span class="token punctuation">(</span>y<span class="token punctuation">,</span> jnp<span class="token punctuation">.</span>argmax<span class="token punctuation">(</span>pred_y_logits<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            loss_vals<span class="token punctuation">.</span>append<span class="token punctuation">(</span>loss<span class="token punctuation">)</span>
+            acc_vals<span class="token punctuation">.</span>append<span class="token punctuation">(</span>acc<span class="token punctuation">)</span>
+
+        <span class="token keyword keyword-return">return</span> jnp<span class="token punctuation">.</span>array<span class="token punctuation">(</span>loss_vals<span class="token punctuation">)</span><span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> jnp<span class="token punctuation">.</span>array<span class="token punctuation">(</span>acc_vals<span class="token punctuation">)</span><span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token decorator annotation punctuation">@jax<span class="token punctuation">.</span>jit</span>
+    <span class="token keyword keyword-def">def</span> <span class="token function">train_step</span><span class="token punctuation">(</span>step<span class="token punctuation">,</span> opt_state<span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        cnn_params<span class="token punctuation">,</span> dense_params <span class="token operator">=</span> split_params<span class="token punctuation">(</span>get_params<span class="token punctuation">(</span>opt_state<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token punctuation">(</span>loss<span class="token punctuation">,</span> pred_y_logits<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>cnn_grads<span class="token punctuation">,</span> dense_grads<span class="token punctuation">)</span> <span class="token operator">=</span> jax<span class="token punctuation">.</span>value_and_grad<span class="token punctuation">(</span>
+            loss_fn<span class="token punctuation">,</span> argnums<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> has_aux<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> x <span class="token punctuation">,</span>y<span class="token punctuation">)</span>
+
+        opt_state <span class="token operator">=</span> opt_update<span class="token punctuation">(</span>step<span class="token punctuation">,</span> cnn_grads <span class="token operator">+</span> dense_grads<span class="token punctuation">,</span> opt_state<span class="token punctuation">)</span>
+        <span class="token keyword keyword-return">return</span> loss<span class="token punctuation">,</span> pred_y_logits<span class="token punctuation">,</span> opt_state
+
+
+    metrics <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'loss'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'acc'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+    eval_metrics <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'epoch_loss'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'epoch_acc'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+    best_model <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'epoch'</span><span class="token punctuation">:</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'eval_acc'</span><span class="token punctuation">:</span> <span class="token operator">-</span><span class="token number">1.</span><span class="token punctuation">,</span> <span class="token string">'opt_state'</span><span class="token punctuation">:</span> <span class="token boolean">None</span><span class="token punctuation">}</span>
+
+    <span class="token keyword keyword-try">try</span><span class="token punctuation">:</span>
+        total_step <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token keyword keyword-for">for</span> epoch <span class="token keyword keyword-in">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>hparams<span class="token punctuation">.</span>epochs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword keyword-for">for</span> x<span class="token punctuation">,</span> y <span class="token keyword keyword-in">in</span> tqdm<span class="token punctuation">.</span>tqdm<span class="token punctuation">(</span>
+                tfds<span class="token punctuation">.</span>as_numpy<span class="token punctuation">(</span>data<span class="token punctuation">.</span>batch<span class="token punctuation">(</span>hparams<span class="token punctuation">.</span>batch_size<span class="token punctuation">)</span><span class="token punctuation">.</span>prefetch<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>data<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span>AUTOTUNE<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                desc<span class="token operator">=</span><span class="token string">'training'</span>
+            <span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+                loss<span class="token punctuation">,</span> pred_y_logits<span class="token punctuation">,</span> opt_state <span class="token operator">=</span> train_step<span class="token punctuation">(</span>total_step<span class="token punctuation">,</span> opt_state<span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+                acc <span class="token operator">=</span> accuracy<span class="token punctuation">(</span>y<span class="token punctuation">,</span> jnp<span class="token punctuation">.</span>argmax<span class="token punctuation">(</span>pred_y_logits<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                metrics<span class="token punctuation">[</span><span class="token string">'loss'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>loss<span class="token punctuation">)</span>
+                metrics<span class="token punctuation">[</span><span class="token string">'acc'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>acc<span class="token punctuation">)</span>
+
+                total_step <span class="token operator">+=</span> <span class="token number">1</span>
+
+            <span class="token keyword keyword-if">if</span> eval_data <span class="token keyword keyword-is">is</span> <span class="token keyword keyword-not">not</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+                eval_loss<span class="token punctuation">,</span> eval_acc <span class="token operator">=</span> evaluate<span class="token punctuation">(</span>opt_state<span class="token punctuation">,</span> eval_data<span class="token operator">=</span>eval_data<span class="token punctuation">)</span>
+                eval_metrics<span class="token punctuation">[</span><span class="token string">'epoch_loss'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>eval_loss<span class="token punctuation">)</span>
+                eval_metrics<span class="token punctuation">[</span><span class="token string">'epoch_acc'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>eval_acc<span class="token punctuation">)</span>
+                <span class="token keyword keyword-if">if</span> eval_acc <span class="token operator">&gt;</span> best_model<span class="token punctuation">[</span><span class="token string">'eval_acc'</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+                    best_model <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'epoch'</span><span class="token punctuation">:</span> epoch<span class="token punctuation">,</span> <span class="token string">'eval_acc'</span><span class="token punctuation">:</span> eval_acc<span class="token punctuation">,</span> <span class="token string">'opt_state'</span><span class="token punctuation">:</span> opt_state<span class="token punctuation">}</span>
+
+            clear_output<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span><span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token string">'epoch'</span><span class="token punctuation">,</span> epoch<span class="token punctuation">,</span> <span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">)</span>
+            plot_metrics<span class="token punctuation">(</span>metrics<span class="token punctuation">,</span> title<span class="token operator">=</span><span class="token string">'Train'</span><span class="token punctuation">)</span>
+            <span class="token keyword keyword-if">if</span> eval_data <span class="token keyword keyword-is">is</span> <span class="token keyword keyword-not">not</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+                plot_metrics<span class="token punctuation">(</span>eval_metrics<span class="token punctuation">,</span> title<span class="token operator">=</span><span class="token string">'Eval'</span><span class="token punctuation">)</span>
+                <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Eval_metrics: epoch_loss </span><span class="token interpolation"><span class="token punctuation">{</span>eval_metrics<span class="token punctuation">[</span><span class="token string">"epoch_loss"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">'</span></span>
+                      <span class="token string-interpolation"><span class="token string">f'\tepoch_acc </span><span class="token interpolation"><span class="token punctuation">{</span>eval_metrics<span class="token punctuation">[</span><span class="token string">"epoch_acc"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-except">except</span> KeyboardInterrupt<span class="token punctuation">:</span>
+        <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Interrupted at epoch </span><span class="token interpolation"><span class="token punctuation">{</span>epoch<span class="token punctuation">}</span></span><span class="token string">.'</span></span><span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Returning model from epoch: </span><span class="token interpolation"><span class="token punctuation">{</span>best_model<span class="token punctuation">[</span><span class="token string">"epoch"</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">, eval_acc: </span><span class="token interpolation"><span class="token punctuation">{</span>best_model<span class="token punctuation">[</span><span class="token string">"eval_acc"</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span>
+    <span class="token keyword keyword-return">return</span> functools<span class="token punctuation">.</span>partial<span class="token punctuation">(</span>evaluate<span class="token punctuation">,</span> best_model<span class="token punctuation">[</span><span class="token string">'opt_state'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+</code></pre><p>First, let's train a CNN on SVHN and measure it's performance on the SVHN test set during training.</p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>hparams <span class="token operator">=</span> OmegaConf<span class="token punctuation">.</span>create<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'epochs'</span><span class="token punctuation">:</span> num_epochs<span class="token punctuation">,</span>
+    <span class="token string">'batch_size'</span><span class="token punctuation">:</span> <span class="token number">128</span><span class="token punctuation">,</span>
+    <span class="token string">'lr'</span><span class="token punctuation">:</span> <span class="token number">0.001</span><span class="token punctuation">,</span>
+    <span class="token string">'beta1'</span><span class="token punctuation">:</span> <span class="token number">0.99</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+eval_fn <span class="token operator">=</span> create_and_train_classifier<span class="token punctuation">(</span>hparams<span class="token punctuation">,</span> ds_svhn<span class="token punctuation">,</span> eval_data<span class="token operator">=</span>ds_svhn_test<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">------------------------------ epoch 2 ------------------------------
+</pre>
+<p><img src="output_28_1.png" alt="png"></p>
+<p><img src="output_28_2.png" alt="png"></p>
+<pre class="language-text">Eval_metrics: epoch_loss 0.24736979603767395	epoch_acc 0.9298917055130005
+Returning model from epoch: 2, eval_acc: 0.9298917055130005
+</pre>
+<p>As you hopefully see, the model achieves pretty high accuracy on SVHN (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>94.7</mn><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">\sim94.7\%</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8056em;vertical-align:-0.0556em;"></span><span class="mord">94.7%</span></span></span></span>).</p>
+<p>Now, let's evaluate the trained model on MNIST-dev (validation set). As you see the performance is much worse!</p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>eval_fn<span class="token punctuation">(</span>ds_mnist_dev<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">evaluation: 100%|██████████| 235/235 [00:01&lt;00:00, 120.33it/s]
+
+
+
+
+
+(Array(0.98951, dtype=float32), Array(0.7138076, dtype=float32))
+</pre>
+<p>Now, let's try some more runs of training with some different hyperparameter settings, while monitoring the model's performance on the MNIST-dev set!</p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>hparams <span class="token operator">=</span> OmegaConf<span class="token punctuation">.</span>create<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'epochs'</span><span class="token punctuation">:</span> num_epochs<span class="token punctuation">,</span>
+    <span class="token string">'batch_size'</span><span class="token punctuation">:</span> <span class="token number">128</span><span class="token punctuation">,</span>
+    <span class="token string">'lr'</span><span class="token punctuation">:</span> <span class="token number">0.001</span><span class="token punctuation">,</span>
+    <span class="token string">'beta1'</span><span class="token punctuation">:</span> <span class="token number">0.99</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+eval_fn <span class="token operator">=</span> create_and_train_classifier<span class="token punctuation">(</span>hparams<span class="token punctuation">,</span> ds_svhn<span class="token punctuation">,</span> eval_data<span class="token operator">=</span>ds_mnist_dev<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">------------------------------ epoch 2 ------------------------------
+</pre>
+<p><img src="output_32_1.png" alt="png"></p>
+<p><img src="output_32_2.png" alt="png"></p>
+<pre class="language-text">Eval_metrics: epoch_loss 1.0258487462997437	epoch_acc 0.7037123441696167
+Returning model from epoch: 2, eval_acc: 0.7037123441696167
+</pre>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>hparams <span class="token operator">=</span> OmegaConf<span class="token punctuation">.</span>create<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'epochs'</span><span class="token punctuation">:</span> num_epochs<span class="token punctuation">,</span>
+    <span class="token string">'batch_size'</span><span class="token punctuation">:</span> <span class="token number">128</span><span class="token punctuation">,</span>
+    <span class="token string">'lr'</span><span class="token punctuation">:</span> <span class="token number">0.0001</span><span class="token punctuation">,</span>
+    <span class="token string">'beta1'</span><span class="token punctuation">:</span> <span class="token number">0.5</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+eval_fn <span class="token operator">=</span> create_and_train_classifier<span class="token punctuation">(</span>hparams<span class="token punctuation">,</span> ds_svhn<span class="token punctuation">,</span> eval_data<span class="token operator">=</span>ds_mnist_dev<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">------------------------------ epoch 2 ------------------------------
+</pre>
+<p><img src="output_33_1.png" alt="png"></p>
+<p><img src="output_33_2.png" alt="png"></p>
+<pre class="language-text">Eval_metrics: epoch_loss 0.9901873469352722	epoch_acc 0.7230275273323059
+Returning model from epoch: 2, eval_acc: 0.7230275273323059
+</pre>
+<h2 id="domain-adaptation-dann">Domain adaptation: DANN </h2>
+<p>In this part we will implement the<br>
+<a href="https://www.jmlr.org/papers/volume17/15-239/15-239.pdf">DANN</a><br>
+model and use to for SVHN → MNIST adaptation.</p>
+<p>As shown on the figure below, DANN has three component networks: feature extractor, label predictor, and domain classifier.<br>
+Label predictor is trained with only source data, as for target data no labels are used.<br>
+The goal of the domain classifier (discriminator) is to distinguish features of the source vs. target domain samples. Therefore, in order to fool the discriminator, the feature extractor (generator) has to make the features of source and domain samples indistinguishable, while preserving enough relevant information to allow the label predictor still correctly classify source samples.</p>
+<p>In GAN training, one typically uses two separate updates, separate for the generator and discriminator.<br>
+DANN however, introduced a <em>Gradient Reversal Layer</em> which reverses the gradients from the discriminator. Thanks to that  all components can updated with just a single update.</p>
+<p><img src="./imgs/dann_figure.svg" alt="DANN figure"></p>
+<p><a href="https://www.jmlr.org/papers/volume17/15-239/15-239.pdf">DANN</a></p>
+<h3>(Task) Implement <em>gradient reversal layer</em> {#task-implement-<em>gradient-reversal-layer</em> }</h3>
+<p>The layer should in the forward pass behave like an identity function. However, in the backward pass it should reverse the gradients and multiply them by <code>l</code>.</p>
+<p>You might want to remind yourself how automatic differentation, back propagation, and chain rule of derivatives work!</p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token decorator annotation punctuation">@jax<span class="token punctuation">.</span>custom_jvp</span>
+<span class="token keyword keyword-def">def</span> <span class="token function">grad_reverse</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> l<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># Just an identity function in the forward pass</span>
+    <span class="token keyword keyword-return">return</span> x
+
+<span class="token decorator annotation punctuation">@grad_reverse<span class="token punctuation">.</span>defjvp</span>
+<span class="token keyword keyword-def">def</span> <span class="token function">grad_reverse_jvp</span><span class="token punctuation">(</span>primals<span class="token punctuation">,</span> tangents<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># Extract the inputs from the tuples</span>
+    x<span class="token punctuation">,</span> l <span class="token operator">=</span> primals
+    dx<span class="token punctuation">,</span> dl <span class="token operator">=</span> tangents
+    <span class="token keyword keyword-return">return</span> x<span class="token punctuation">,</span> l <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token operator">-</span>dx<span class="token punctuation">)</span>
+
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code>grad_reverse<span class="token punctuation">(</span>jnp<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token number">5.</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+</code></pre><pre class="language-text">Array(5., dtype=float32, weak_type=True)
+</pre>
+<h4>(Task) Test <em>gradient reversal layer</em> {#task-test-<em>gradient-reversal-layer</em> }</h4>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>l <span class="token operator">=</span> <span class="token number">0.5</span>
+<span class="token keyword keyword-def">def</span> <span class="token function">f</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-return">return</span> jnp<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>grad_reverse<span class="token punctuation">(</span>x<span class="token punctuation">,</span> l<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">5.</span>
+
+x <span class="token operator">=</span> jnp<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">5.</span><span class="token punctuation">)</span>
+
+np<span class="token punctuation">.</span>testing<span class="token punctuation">.</span>assert_almost_equal<span class="token punctuation">(</span>x<span class="token punctuation">,</span> grad_reverse<span class="token punctuation">(</span>x<span class="token punctuation">,</span> l<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+jax<span class="token punctuation">.</span>grad<span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">,</span> jax<span class="token punctuation">.</span>grad<span class="token punctuation">(</span>jnp<span class="token punctuation">.</span>sin<span class="token punctuation">)</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">5.</span> <span class="token operator">*</span> l
+expected <span class="token operator">=</span> jax<span class="token punctuation">.</span>grad<span class="token punctuation">(</span>jnp<span class="token punctuation">.</span>sin<span class="token punctuation">)</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">5.</span> <span class="token operator">*</span> l <span class="token operator">*</span> <span class="token operator">-</span><span class="token number">1.</span>
+returned <span class="token operator">=</span> jax<span class="token punctuation">.</span>grad<span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span>
+np<span class="token punctuation">.</span>testing<span class="token punctuation">.</span>assert_almost_equal<span class="token punctuation">(</span>returned<span class="token punctuation">,</span> expected<span class="token punctuation">)</span>
+</code></pre><h3 id="task-implement-dann-model">(Task) Implement DANN model </h3>
+<p>Task: Implement the training as in DANN model, using the model architecture as provided.<br>
+Remember to use the <em>gradient reversal layer</em> and that you need to only one update for all the component networks.</p>
+<p>The model should be optimized for the sum of classification loss on the source data and domain discrimination loss (weighted by <code>hparams.gan_loss_weight</code>).</p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">sigmoid_cross_entropy</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">,</span> targets<span class="token punctuation">,</span> logits<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-assert">assert</span> targets<span class="token punctuation">.</span>shape <span class="token operator">==</span> logits<span class="token punctuation">.</span>shape
+
+    loss <span class="token operator">=</span> targets <span class="token operator">*</span> jnp<span class="token punctuation">.</span>log<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">+</span>jnp<span class="token punctuation">.</span>exp<span class="token punctuation">(</span><span class="token operator">-</span>logits<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>targets<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span>logits <span class="token operator">+</span> jnp<span class="token punctuation">.</span>log<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">+</span>jnp<span class="token punctuation">.</span>exp<span class="token punctuation">(</span><span class="token operator">-</span>logits<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-assert">assert</span> loss<span class="token punctuation">.</span>shape <span class="token operator">==</span> logits<span class="token punctuation">.</span>shape<span class="token punctuation">,</span> \
+        <span class="token string">'cross-entropy loss is not expected here to be averaged over samples'</span>
+    <span class="token keyword keyword-return">return</span> loss
+
+<span class="token keyword keyword-def">def</span> <span class="token function">discriminator_loss</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">,</span> real_logits<span class="token punctuation">,</span> fake_logits<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># NOTE: the inputs are expected to be logits, not probabilities!</span>
+
+    ones <span class="token operator">=</span> jnp<span class="token punctuation">.</span>ones_like<span class="token punctuation">(</span>real_logits<span class="token punctuation">)</span>
+    zeros <span class="token operator">=</span> jnp<span class="token punctuation">.</span>zeros_like<span class="token punctuation">(</span>fake_logits<span class="token punctuation">)</span>
+
+    real_loss <span class="token operator">=</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>sigmoid_cross_entropy<span class="token punctuation">(</span>logits<span class="token operator">=</span>real_logits<span class="token punctuation">,</span> targets<span class="token operator">=</span>ones<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    fake_loss <span class="token operator">=</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>sigmoid_cross_entropy<span class="token punctuation">(</span>logits<span class="token operator">=</span>fake_logits<span class="token punctuation">,</span> targets<span class="token operator">=</span>zeros<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    loss <span class="token operator">=</span> real_loss <span class="token operator">+</span> fake_loss
+
+    <span class="token keyword keyword-assert">assert</span> loss<span class="token punctuation">.</span>shape <span class="token operator">==</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
+        <span class="token string">'discriminator loss is expected here to be averaged over samples'</span>
+    <span class="token keyword keyword-return">return</span> loss
+
+<span class="token keyword keyword-def">def</span> <span class="token function">generator_loss</span><span class="token punctuation">(</span>discriminator_fake_logits<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    loss <span class="token operator">=</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>sigmoid_cross_entropy<span class="token punctuation">(</span>logits<span class="token operator">=</span>discriminator_fake_logits<span class="token punctuation">,</span> targets<span class="token operator">=</span>jnp<span class="token punctuation">.</span>ones_like<span class="token punctuation">(</span>discriminator_fake_logits<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-assert">assert</span> loss<span class="token punctuation">.</span>shape <span class="token operator">==</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
+        <span class="token string">'discriminator loss is expected here to be averaged over samples'</span>
+    <span class="token keyword keyword-return">return</span> loss
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">create_discriminator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword keyword-return">return</span> stax<span class="token punctuation">.</span>serial<span class="token punctuation">(</span>
+        stax<span class="token punctuation">.</span>Dense<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span> stax<span class="token punctuation">.</span>BatchNorm<span class="token punctuation">(</span>axis<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>Dense<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span><span class="token punctuation">,</span> stax<span class="token punctuation">.</span>LeakyRelu<span class="token punctuation">,</span>
+        stax<span class="token punctuation">.</span>Dense<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> W_init<span class="token operator">=</span>w_init<span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">adaptation_weight</span><span class="token punctuation">(</span>step<span class="token punctuation">,</span> num_steps<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    p <span class="token operator">=</span> jnp<span class="token punctuation">.</span>clip<span class="token punctuation">(</span>step <span class="token operator">/</span> num_steps<span class="token punctuation">,</span> <span class="token number">0.</span><span class="token punctuation">,</span> <span class="token number">1.</span><span class="token punctuation">)</span>
+    l <span class="token operator">=</span> <span class="token number">2</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> jnp<span class="token punctuation">.</span>exp<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">10.</span> <span class="token operator">*</span> p<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span>
+    <span class="token keyword keyword-return">return</span> l
+</code></pre><pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">create_and_train_classifier_dann</span><span class="token punctuation">(</span>hparams<span class="token punctuation">,</span> src_data<span class="token punctuation">,</span> tar_data<span class="token punctuation">,</span> eval_data<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    cnn_init<span class="token punctuation">,</span> cnn_apply <span class="token operator">=</span> create_cnn<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    dense_init<span class="token punctuation">,</span> dense_apply <span class="token operator">=</span> create_label_predictor<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    dis_init<span class="token punctuation">,</span> dis_apply <span class="token operator">=</span> create_discriminator<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    key <span class="token operator">=</span> jax<span class="token punctuation">.</span>random<span class="token punctuation">.</span>PRNGKey<span class="token punctuation">(</span>seed<span class="token punctuation">)</span>
+    key<span class="token punctuation">,</span> key_cnn<span class="token punctuation">,</span> key_pred<span class="token punctuation">,</span> key_dis <span class="token operator">=</span> jax<span class="token punctuation">.</span>random<span class="token punctuation">.</span>split<span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span>
+    data_input_shape <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    cnn_output_shape<span class="token punctuation">,</span> cnn_params <span class="token operator">=</span> cnn_init<span class="token punctuation">(</span>key_cnn<span class="token punctuation">,</span> data_input_shape<span class="token punctuation">)</span>
+    _<span class="token punctuation">,</span> dense_params <span class="token operator">=</span> dense_init<span class="token punctuation">(</span>key_pred<span class="token punctuation">,</span> cnn_output_shape<span class="token punctuation">)</span>
+    _<span class="token punctuation">,</span> dis_params <span class="token operator">=</span> dis_init<span class="token punctuation">(</span>key_dis<span class="token punctuation">,</span> cnn_output_shape<span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-def">def</span> <span class="token function">split_params</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        n <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>cnn_params<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">len</span><span class="token punctuation">(</span>dense_params<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">len</span><span class="token punctuation">(</span>dis_params<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword keyword-return">return</span> <span class="token punctuation">(</span>
+            params<span class="token punctuation">[</span><span class="token punctuation">:</span>n<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            params<span class="token punctuation">[</span>n<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">:</span>n<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">+</span> n<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            params<span class="token punctuation">[</span>n<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">+</span> n<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+        <span class="token punctuation">)</span>
+
+    opt_init<span class="token punctuation">,</span> opt_update<span class="token punctuation">,</span> get_params <span class="token operator">=</span> optimizers<span class="token punctuation">.</span>adam<span class="token punctuation">(</span>
+        step_size<span class="token operator">=</span>hparams<span class="token punctuation">.</span>lr<span class="token punctuation">,</span> b1<span class="token operator">=</span>hparams<span class="token punctuation">.</span>beta1
+    <span class="token punctuation">)</span>
+    opt_state <span class="token operator">=</span> opt_init<span class="token punctuation">(</span>cnn_params <span class="token operator">+</span> dense_params <span class="token operator">+</span> dis_params<span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-def">def</span> <span class="token function">loss_fn_classification</span><span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># Used for evaluation</span>
+        pred_y_logits <span class="token operator">=</span> dense_apply<span class="token punctuation">(</span>dense_params<span class="token punctuation">,</span> cnn_apply<span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        loss <span class="token operator">=</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>
+            sparse_softmax_cross_entropy<span class="token punctuation">(</span>targets<span class="token operator">=</span>y<span class="token punctuation">,</span> logits<span class="token operator">=</span>pred_y_logits<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            axis<span class="token operator">=</span><span class="token number">0</span>
+        <span class="token punctuation">)</span>
+        <span class="token keyword keyword-return">return</span> loss<span class="token punctuation">,</span> pred_y_logits
+
+    <span class="token keyword keyword-def">def</span> <span class="token function">evaluate</span><span class="token punctuation">(</span>opt_state<span class="token punctuation">,</span> eval_data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> _ <span class="token operator">=</span> split_params<span class="token punctuation">(</span>get_params<span class="token punctuation">(</span>opt_state<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        loss_fn_cls_jit <span class="token operator">=</span> jax<span class="token punctuation">.</span>jit<span class="token punctuation">(</span>loss_fn_classification<span class="token punctuation">)</span>
+
+        loss_vals<span class="token punctuation">,</span> acc_vals <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token keyword keyword-for">for</span> i<span class="token punctuation">,</span> <span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span> <span class="token keyword keyword-in">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>tqdm<span class="token punctuation">.</span>tqdm<span class="token punctuation">(</span>
+            tfds<span class="token punctuation">.</span>as_numpy<span class="token punctuation">(</span>eval_data<span class="token punctuation">.</span>batch<span class="token punctuation">(</span>hparams<span class="token punctuation">.</span>batch_size<span class="token punctuation">)</span><span class="token punctuation">.</span>prefetch<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>data<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span>AUTOTUNE<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            desc<span class="token operator">=</span><span class="token string">'evaluation'</span>
+        <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            loss<span class="token punctuation">,</span> pred_y_logits <span class="token operator">=</span> loss_fn_cls_jit<span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+            acc <span class="token operator">=</span> accuracy<span class="token punctuation">(</span>y<span class="token punctuation">,</span> jnp<span class="token punctuation">.</span>argmax<span class="token punctuation">(</span>pred_y_logits<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            loss_vals<span class="token punctuation">.</span>append<span class="token punctuation">(</span>loss<span class="token punctuation">)</span>
+            acc_vals<span class="token punctuation">.</span>append<span class="token punctuation">(</span>acc<span class="token punctuation">)</span>
+
+        <span class="token keyword keyword-return">return</span> jnp<span class="token punctuation">.</span>array<span class="token punctuation">(</span>loss_vals<span class="token punctuation">)</span><span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> jnp<span class="token punctuation">.</span>array<span class="token punctuation">(</span>acc_vals<span class="token punctuation">)</span><span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment"># Implements the loss function described in the research paper</span>
+    <span class="token keyword keyword-def">def</span> <span class="token function">loss_fn</span><span class="token punctuation">(</span>params<span class="token punctuation">,</span> x_src<span class="token punctuation">,</span> y_src<span class="token punctuation">,</span> x_tar<span class="token punctuation">,</span> step<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> dis_params <span class="token operator">=</span> split_params<span class="token punctuation">(</span>params<span class="token punctuation">)</span>
+
+        <span class="token comment"># Compute the adaptation weight dynamically if enabled, otherwise use a fixed weight</span>
+        weight  <span class="token operator">=</span> hparams<span class="token punctuation">.</span>gan_loss_weight <span class="token keyword keyword-if">if</span> <span class="token keyword keyword-not">not</span> hparams<span class="token punctuation">.</span>dynamic_adaptation_weight <span class="token keyword keyword-else">else</span> adaptation_weight<span class="token punctuation">(</span>step<span class="token punctuation">,</span> hparams<span class="token punctuation">.</span>num_steps<span class="token punctuation">)</span>
+
+        <span class="token comment"># Extract features for source and target inputs using the CNN</span>
+        src_features <span class="token operator">=</span> cnn_apply<span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> x_src<span class="token punctuation">)</span>
+        tar_features <span class="token operator">=</span> cnn_apply<span class="token punctuation">(</span>cnn_params<span class="token punctuation">,</span> x_tar<span class="token punctuation">)</span>
+
+        <span class="token comment"># Predict source logits using the dense (classification) layer</span>
+        pred_src_logits <span class="token operator">=</span> dense_apply<span class="token punctuation">(</span>dense_params<span class="token punctuation">,</span> src_features<span class="token punctuation">)</span>
+
+        <span class="token comment"># Apply gradient reversal to source and target features for adversarial training</span>
+        features_source_rev <span class="token operator">=</span> grad_reverse<span class="token punctuation">(</span>src_features<span class="token punctuation">,</span> weight<span class="token punctuation">)</span>
+        features_target_rev <span class="token operator">=</span> grad_reverse<span class="token punctuation">(</span>tar_features<span class="token punctuation">,</span> weight<span class="token punctuation">)</span>
+
+        <span class="token comment"># Calculate classification loss for source domain</span>
+        cls_loss <span class="token operator">=</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>
+            sparse_softmax_cross_entropy<span class="token punctuation">(</span>targets<span class="token operator">=</span>y_src<span class="token punctuation">,</span> logits<span class="token operator">=</span>pred_src_logits<span class="token punctuation">)</span>
+        <span class="token punctuation">)</span>
+
+        <span class="token comment"># Apply the discriminator to the source and target features</span>
+        dis_tar_logits <span class="token operator">=</span> dis_apply<span class="token punctuation">(</span>dis_params<span class="token punctuation">,</span> tar_features<span class="token punctuation">)</span>
+        dis_src_logits <span class="token operator">=</span> dis_apply<span class="token punctuation">(</span>dis_params<span class="token punctuation">,</span> src_features<span class="token punctuation">)</span>
+
+        <span class="token comment"># Calculate the adversarial loss for the discriminator</span>
+        dis_loss <span class="token operator">=</span> discriminator_loss<span class="token punctuation">(</span>
+            real_logits<span class="token operator">=</span>dis_src_logits<span class="token punctuation">,</span> fake_logits<span class="token operator">=</span>dis_tar_logits
+        <span class="token punctuation">)</span>
+
+        <span class="token comment"># Combine classification loss and adversarial loss, weighted by the adaptation weight</span>
+        loss <span class="token operator">=</span> cls_loss <span class="token operator">+</span> dis_loss <span class="token operator">*</span> weight
+        <span class="token keyword keyword-return">return</span> loss
+
+    <span class="token comment"># JIT-compiled training step for performance optimization</span>
+    <span class="token decorator annotation punctuation">@jax<span class="token punctuation">.</span>jit</span>
+    <span class="token keyword keyword-def">def</span> <span class="token function">train_step</span><span class="token punctuation">(</span>step<span class="token punctuation">,</span> opt_state<span class="token punctuation">,</span> x_src<span class="token punctuation">,</span> y_src<span class="token punctuation">,</span> x_tar<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># Retrieve the current model parameters from the optimizer state</span>
+        params <span class="token operator">=</span> get_params<span class="token punctuation">(</span>opt_state<span class="token punctuation">)</span>
+
+        <span class="token comment"># Compute the loss and gradients with respect to the model parameters</span>
+        loss<span class="token punctuation">,</span> grads <span class="token operator">=</span> jax<span class="token punctuation">.</span>value_and_grad<span class="token punctuation">(</span>loss_fn<span class="token punctuation">)</span><span class="token punctuation">(</span>params<span class="token punctuation">,</span> x_src<span class="token punctuation">,</span> y_src<span class="token punctuation">,</span> x_tar<span class="token punctuation">,</span> step<span class="token punctuation">)</span>
+
+        <span class="token comment"># Forward pass: calculate the discriminator loss</span>
+        dis_loss <span class="token operator">=</span> discriminator_loss<span class="token punctuation">(</span>
+            real_logits<span class="token operator">=</span>dis_apply<span class="token punctuation">(</span>split_params<span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> cnn_apply<span class="token punctuation">(</span>split_params<span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> x_src<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            fake_logits<span class="token operator">=</span>dis_apply<span class="token punctuation">(</span>split_params<span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> cnn_apply<span class="token punctuation">(</span>split_params<span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> x_tar<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span>
+
+        <span class="token comment"># Update the optimizer state with the computed gradients</span>
+        opt_state <span class="token operator">=</span> opt_update<span class="token punctuation">(</span>step<span class="token punctuation">,</span> grads<span class="token punctuation">,</span> opt_state<span class="token punctuation">)</span>
+
+        <span class="token comment"># Forward pass: predict source logits for classification loss computation</span>
+        pred_src_logits <span class="token operator">=</span> dense_apply<span class="token punctuation">(</span>split_params<span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> cnn_apply<span class="token punctuation">(</span>split_params<span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> x_src<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token comment"># Split the parameters for further analysis or use</span>
+        cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> dis_params <span class="token operator">=</span> split_params<span class="token punctuation">(</span>params<span class="token punctuation">)</span>
+
+        cls_loss <span class="token operator">=</span> jnp<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>sparse_softmax_cross_entropy<span class="token punctuation">(</span>targets<span class="token operator">=</span>y_src<span class="token punctuation">,</span> logits<span class="token operator">=</span>pred_src_logits<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token comment"># Return the loss values and updated optimizer state</span>
+        <span class="token keyword keyword-return">return</span> <span class="token punctuation">(</span>loss<span class="token punctuation">,</span> cls_loss<span class="token punctuation">,</span> dis_loss<span class="token punctuation">)</span><span class="token punctuation">,</span> pred_src_logits<span class="token punctuation">,</span> opt_state
+
+
+
+    metrics <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'loss'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'cls_loss'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'dis_loss'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'acc'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+    eval_metrics <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'epoch_loss'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'epoch_acc'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+    best_model <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'epoch'</span><span class="token punctuation">:</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'eval_acc'</span><span class="token punctuation">:</span> <span class="token operator">-</span><span class="token number">1.</span><span class="token punctuation">,</span> <span class="token string">'opt_state'</span><span class="token punctuation">:</span> <span class="token boolean">None</span><span class="token punctuation">}</span>
+
+    total_step <span class="token operator">=</span> <span class="token number">0</span>
+    tar_data_iter <span class="token operator">=</span> tar_data<span class="token punctuation">.</span>repeat<span class="token punctuation">(</span><span class="token punctuation">)</span>\
+        <span class="token punctuation">.</span>batch<span class="token punctuation">(</span>hparams<span class="token punctuation">.</span>batch_size<span class="token punctuation">)</span><span class="token punctuation">.</span>prefetch<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>data<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span>AUTOTUNE<span class="token punctuation">)</span>\
+        <span class="token punctuation">.</span>as_numpy_iterator<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-try">try</span><span class="token punctuation">:</span>
+        <span class="token keyword keyword-for">for</span> epoch <span class="token keyword keyword-in">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>hparams<span class="token punctuation">.</span>epochs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword keyword-for">for</span> x_src<span class="token punctuation">,</span> y_src <span class="token keyword keyword-in">in</span> tqdm<span class="token punctuation">.</span>tqdm<span class="token punctuation">(</span>
+                tfds<span class="token punctuation">.</span>as_numpy<span class="token punctuation">(</span>src_data<span class="token punctuation">.</span>batch<span class="token punctuation">(</span>hparams<span class="token punctuation">.</span>batch_size<span class="token punctuation">)</span><span class="token punctuation">.</span>prefetch<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>data<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span>AUTOTUNE<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                desc<span class="token operator">=</span><span class="token string">'training'</span>
+            <span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+                x_tar<span class="token punctuation">,</span> _ <span class="token operator">=</span> <span class="token builtin">next</span><span class="token punctuation">(</span>tar_data_iter<span class="token punctuation">)</span>
+
+                <span class="token punctuation">(</span>loss<span class="token punctuation">,</span> cls_loss<span class="token punctuation">,</span> dis_loss<span class="token punctuation">)</span><span class="token punctuation">,</span> pred_src_logits<span class="token punctuation">,</span> opt_state <span class="token operator">=</span> train_step<span class="token punctuation">(</span>
+                    total_step<span class="token punctuation">,</span> opt_state<span class="token punctuation">,</span> x_src<span class="token punctuation">,</span> y_src<span class="token punctuation">,</span> x_tar<span class="token punctuation">)</span>
+                acc <span class="token operator">=</span> accuracy<span class="token punctuation">(</span>y_src<span class="token punctuation">,</span> jnp<span class="token punctuation">.</span>argmax<span class="token punctuation">(</span>pred_src_logits<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                metrics<span class="token punctuation">[</span><span class="token string">'loss'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>loss<span class="token punctuation">)</span>
+                metrics<span class="token punctuation">[</span><span class="token string">'cls_loss'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>cls_loss<span class="token punctuation">)</span>
+                metrics<span class="token punctuation">[</span><span class="token string">'dis_loss'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>dis_loss<span class="token punctuation">)</span>
+                metrics<span class="token punctuation">[</span><span class="token string">'acc'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>acc<span class="token punctuation">)</span>
+
+                total_step <span class="token operator">+=</span> <span class="token number">1</span>
+
+            <span class="token keyword keyword-if">if</span> eval_data <span class="token keyword keyword-is">is</span> <span class="token keyword keyword-not">not</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+                eval_loss<span class="token punctuation">,</span> eval_acc <span class="token operator">=</span> evaluate<span class="token punctuation">(</span>opt_state<span class="token punctuation">,</span> eval_data<span class="token operator">=</span>eval_data<span class="token punctuation">)</span>
+                eval_metrics<span class="token punctuation">[</span><span class="token string">'epoch_loss'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>eval_loss<span class="token punctuation">)</span>
+                eval_metrics<span class="token punctuation">[</span><span class="token string">'epoch_acc'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>append<span class="token punctuation">(</span>eval_acc<span class="token punctuation">)</span>
+
+                <span class="token keyword keyword-if">if</span> eval_acc <span class="token operator">&gt;</span> best_model<span class="token punctuation">[</span><span class="token string">'eval_acc'</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+                    best_model <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'epoch'</span><span class="token punctuation">:</span> epoch<span class="token punctuation">,</span> <span class="token string">'eval_acc'</span><span class="token punctuation">:</span> eval_acc<span class="token punctuation">,</span> <span class="token string">'opt_state'</span><span class="token punctuation">:</span> opt_state<span class="token punctuation">}</span>
+
+            clear_output<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span><span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token string">'epoch'</span><span class="token punctuation">,</span> epoch<span class="token punctuation">,</span> <span class="token string">'-'</span> <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">)</span>
+            plot_metrics<span class="token punctuation">(</span>metrics<span class="token punctuation">,</span> title<span class="token operator">=</span><span class="token string">'Train'</span><span class="token punctuation">)</span>
+            <span class="token keyword keyword-if">if</span> eval_data <span class="token keyword keyword-is">is</span> <span class="token keyword keyword-not">not</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+                plot_metrics<span class="token punctuation">(</span>eval_metrics<span class="token punctuation">,</span> title<span class="token operator">=</span><span class="token string">'Eval'</span><span class="token punctuation">)</span>
+                <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Eval_metrics: epoch_loss </span><span class="token interpolation"><span class="token punctuation">{</span>eval_metrics<span class="token punctuation">[</span><span class="token string">"epoch_loss"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">'</span></span>
+                      <span class="token string-interpolation"><span class="token string">f'\tepoch_acc </span><span class="token interpolation"><span class="token punctuation">{</span>eval_metrics<span class="token punctuation">[</span><span class="token string">"epoch_acc"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span>
+
+
+    <span class="token keyword keyword-except">except</span> KeyboardInterrupt<span class="token punctuation">:</span>
+        <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Interrupted at epoch </span><span class="token interpolation"><span class="token punctuation">{</span>epoch<span class="token punctuation">}</span></span><span class="token string">.'</span></span><span class="token punctuation">)</span>
+
+    <span class="token keyword keyword-print">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Returning model from epoch: </span><span class="token interpolation"><span class="token punctuation">{</span>best_model<span class="token punctuation">[</span><span class="token string">"epoch"</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">, eval_acc: </span><span class="token interpolation"><span class="token punctuation">{</span>best_model<span class="token punctuation">[</span><span class="token string">"eval_acc"</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span>
+    cnn_params<span class="token punctuation">,</span> dense_params<span class="token punctuation">,</span> dis_params <span class="token operator">=</span> split_params<span class="token punctuation">(</span>get_params<span class="token punctuation">(</span>best_model<span class="token punctuation">[</span><span class="token string">'opt_state'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword keyword-return">return</span> <span class="token punctuation">{</span>
+        <span class="token string">'eval_fn'</span><span class="token punctuation">:</span> functools<span class="token punctuation">.</span>partial<span class="token punctuation">(</span>evaluate<span class="token punctuation">,</span> best_model<span class="token punctuation">[</span><span class="token string">'opt_state'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">'cnn'</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>cnn_apply<span class="token punctuation">,</span> cnn_params<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">'dense'</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>dense_apply<span class="token punctuation">,</span> dense_params<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">'dis'</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>dis_apply<span class="token punctuation">,</span> dis_params<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+</code></pre><p>After implementing the model, try to train it with a few different settings of hyperpameters.</p>
+<p>Can you get results similar to the following?</p>
+<p><img src="./imgs/step3_dann_training.png" alt="image.png"></p>
+<p><strong>How is it possible that the DANN model evaluated on data (MNIST) has a high accuracy but also such an insanely high cross-entropy?</strong><small>(The cross-entropy was actually much lower when no domain adaptation was done!)</small></p>
+<ul>
+<li>Can you explain it?</li>
+<li>Note that on 10-class classification by random chance one could expect the cross-entropy of 2.3</li>
+</ul>
+<p>If you have some hypotheses about possible explainations, but also the reasons why it happen, try to verify them by investigating the trained models (returned from the function), or possibly even running some additional experiments.</p>
+<p><strong>High accuracy with high cross-entropy could happen because the model's predicted probabilities are less confident (spread out across classes), even if the top prediction is correct. DANN could prioritize aligning feature distributions over optimizing class probabilities, leading to softer outputs. This explains why cross-entropy might increase, even as accuracy improves.</strong></p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>hparams_dann <span class="token operator">=</span> OmegaConf<span class="token punctuation">.</span>create<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'epochs'</span><span class="token punctuation">:</span> num_epochs<span class="token punctuation">,</span>
+    <span class="token string">'batch_size'</span><span class="token punctuation">:</span> <span class="token number">128</span><span class="token punctuation">,</span>
+    <span class="token string">'lr'</span><span class="token punctuation">:</span> <span class="token number">0.0001</span><span class="token punctuation">,</span>
+    <span class="token string">'gan_loss_weight'</span><span class="token punctuation">:</span> <span class="token number">0.5</span><span class="token punctuation">,</span>
+    <span class="token string">'beta1'</span><span class="token punctuation">:</span> <span class="token number">0.5</span><span class="token punctuation">,</span>
+    <span class="token string">'num_steps'</span><span class="token punctuation">:</span> <span class="token number">10000</span><span class="token punctuation">,</span>
+    <span class="token string">'dynamic_adaptation_weight'</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+model <span class="token operator">=</span> create_and_train_classifier_dann<span class="token punctuation">(</span>
+    hparams_dann<span class="token punctuation">,</span>
+    src_data<span class="token operator">=</span>ds_svhn<span class="token punctuation">,</span> tar_data<span class="token operator">=</span>ds_mnist<span class="token punctuation">,</span>
+    eval_data<span class="token operator">=</span>ds_mnist_dev<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">------------------------------ epoch 2 ------------------------------
+</pre>
+<p><img src="output_48_1.png" alt="png"></p>
+<p><img src="output_48_2.png" alt="png"></p>
+<pre class="language-text">Eval_metrics: epoch_loss 1.2095081806182861	epoch_acc 0.6378546357154846
+Returning model from epoch: 2, eval_acc: 0.6378546357154846
+</pre>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>model<span class="token punctuation">[</span><span class="token string">'eval_fn'</span><span class="token punctuation">]</span><span class="token punctuation">(</span>ds_mnist_test<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">evaluation: 100%|██████████| 79/79 [00:02&lt;00:00, 28.87it/s] 
+
+
+
+
+
+(Array(1.1639146, dtype=float32), Array(0.65417325, dtype=float32))
+</pre>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>hparams_dann <span class="token operator">=</span> OmegaConf<span class="token punctuation">.</span>create<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'epochs'</span><span class="token punctuation">:</span> num_epochs<span class="token punctuation">,</span>
+    <span class="token string">'batch_size'</span><span class="token punctuation">:</span> <span class="token number">128</span><span class="token punctuation">,</span>
+    <span class="token string">'lr'</span><span class="token punctuation">:</span> <span class="token number">0.0001</span><span class="token punctuation">,</span>
+    <span class="token string">'gan_loss_weight'</span><span class="token punctuation">:</span> <span class="token number">0.5</span><span class="token punctuation">,</span>
+    <span class="token string">'beta1'</span><span class="token punctuation">:</span> <span class="token number">0.5</span><span class="token punctuation">,</span>
+    <span class="token string">'num_steps'</span><span class="token punctuation">:</span> <span class="token number">10000</span><span class="token punctuation">,</span>
+    <span class="token string">'dynamic_adaptation_weight'</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+model <span class="token operator">=</span> create_and_train_classifier_dann<span class="token punctuation">(</span>
+    hparams_dann<span class="token punctuation">,</span>
+    src_data<span class="token operator">=</span>ds_svhn<span class="token punctuation">,</span> tar_data<span class="token operator">=</span>ds_mnist<span class="token punctuation">,</span>
+    eval_data<span class="token operator">=</span>ds_mnist_dev<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">------------------------------ epoch 2 ------------------------------
+</pre>
+<p><img src="output_50_1.png" alt="png"></p>
+<p><img src="output_50_2.png" alt="png"></p>
+<pre class="language-text">Eval_metrics: epoch_loss 1.0495810508728027	epoch_acc 0.7074357271194458
+Returning model from epoch: 2, eval_acc: 0.7074357271194458
+</pre>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>hparams_dann <span class="token operator">=</span> OmegaConf<span class="token punctuation">.</span>create<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'epochs'</span><span class="token punctuation">:</span> num_epochs<span class="token punctuation">,</span>
+    <span class="token string">'batch_size'</span><span class="token punctuation">:</span> <span class="token number">128</span><span class="token punctuation">,</span>
+    <span class="token string">'lr'</span><span class="token punctuation">:</span> <span class="token number">0.0001</span><span class="token punctuation">,</span>
+    <span class="token string">'gan_loss_weight'</span><span class="token punctuation">:</span> <span class="token number">1.</span><span class="token punctuation">,</span>
+    <span class="token string">'beta1'</span><span class="token punctuation">:</span> <span class="token number">0.5</span><span class="token punctuation">,</span>
+    <span class="token string">'num_steps'</span><span class="token punctuation">:</span> <span class="token number">10000</span><span class="token punctuation">,</span>
+    <span class="token string">'dynamic_adaptation_weight'</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+model <span class="token operator">=</span> create_and_train_classifier_dann<span class="token punctuation">(</span>
+    hparams_dann<span class="token punctuation">,</span>
+    src_data<span class="token operator">=</span>ds_svhn<span class="token punctuation">,</span> tar_data<span class="token operator">=</span>ds_mnist<span class="token punctuation">,</span>
+    eval_data<span class="token operator">=</span>ds_mnist_dev<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">------------------------------ epoch 2 ------------------------------
+</pre>
+<p><img src="output_51_1.png" alt="png"></p>
+<p><img src="output_51_2.png" alt="png"></p>
+<pre class="language-text">Eval_metrics: epoch_loss 1.2917193174362183	epoch_acc 0.5978280305862427
+Returning model from epoch: 2, eval_acc: 0.5978280305862427
+</pre>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>hparams_dann <span class="token operator">=</span> OmegaConf<span class="token punctuation">.</span>create<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'epochs'</span><span class="token punctuation">:</span> num_epochs<span class="token punctuation">,</span>
+    <span class="token string">'batch_size'</span><span class="token punctuation">:</span> <span class="token number">128</span><span class="token punctuation">,</span>
+    <span class="token string">'lr'</span><span class="token punctuation">:</span> <span class="token number">0.001</span><span class="token punctuation">,</span>
+    <span class="token string">'gan_loss_weight'</span><span class="token punctuation">:</span> <span class="token number">0.5</span><span class="token punctuation">,</span>
+    <span class="token string">'beta1'</span><span class="token punctuation">:</span> <span class="token number">0.99</span><span class="token punctuation">,</span>
+    <span class="token string">'num_steps'</span><span class="token punctuation">:</span> <span class="token number">10000</span><span class="token punctuation">,</span>
+    <span class="token string">'dynamic_adaptation_weight'</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+model <span class="token operator">=</span> create_and_train_classifier_dann<span class="token punctuation">(</span>
+    hparams_dann<span class="token punctuation">,</span>
+    src_data<span class="token operator">=</span>ds_svhn<span class="token punctuation">,</span> tar_data<span class="token operator">=</span>ds_mnist<span class="token punctuation">,</span>
+    eval_data<span class="token operator">=</span>ds_mnist_dev<span class="token punctuation">)</span>
+
+</code></pre><pre class="language-text">------------------------------ epoch 2 ------------------------------
+</pre>
+<p><img src="output_52_1.png" alt="png"></p>
+<p><img src="output_52_2.png" alt="png"></p>
+<pre class="language-text">Eval_metrics: epoch_loss 1.4342645406723022	epoch_acc 0.6338984966278076
+Returning model from epoch: 2, eval_acc: 0.6338984966278076
+</pre>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code>hparams_dann <span class="token operator">=</span> OmegaConf<span class="token punctuation">.</span>create<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'epochs'</span><span class="token punctuation">:</span> num_epochs<span class="token punctuation">,</span>
+    <span class="token string">'batch_size'</span><span class="token punctuation">:</span> <span class="token number">128</span><span class="token punctuation">,</span>
+    <span class="token string">'lr'</span><span class="token punctuation">:</span> <span class="token number">0.0001</span><span class="token punctuation">,</span>
+    <span class="token string">'gan_loss_weight'</span><span class="token punctuation">:</span> <span class="token number">1.</span><span class="token punctuation">,</span>
+    <span class="token string">'beta1'</span><span class="token punctuation">:</span> <span class="token number">0.5</span><span class="token punctuation">,</span>
+    <span class="token string">'num_steps'</span><span class="token punctuation">:</span> <span class="token number">10000</span><span class="token punctuation">,</span>
+    <span class="token string">'dynamic_adaptation_weight'</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+model <span class="token operator">=</span> create_and_train_classifier_dann<span class="token punctuation">(</span>
+    hparams_dann<span class="token punctuation">,</span>
+    src_data<span class="token operator">=</span>ds_svhn<span class="token punctuation">,</span> tar_data<span class="token operator">=</span>ds_mnist<span class="token punctuation">,</span>
+    eval_data<span class="token operator">=</span>ds_mnist_dev<span class="token punctuation">)</span>
+</code></pre><pre class="language-text">------------------------------ epoch 2 ------------------------------
+</pre>
+<p><img src="output_53_1.png" alt="png"></p>
+<p><img src="output_53_2.png" alt="png"></p>
+<pre class="language-text">Eval_metrics: epoch_loss 1.5014591217041016	epoch_acc 0.5450243353843689
+Returning model from epoch: 1, eval_acc: 0.5525708794593811
+</pre>
+<p>Finally, it is valuable for us to know, how long did it take you to finish this practical?</p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code></code></pre>
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
